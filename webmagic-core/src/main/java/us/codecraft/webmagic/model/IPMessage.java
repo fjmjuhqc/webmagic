@@ -10,6 +10,15 @@ public class IPMessage implements Serializable {
     private String IPType;//类型
     private String IPSpeed;//速度
 
+    public IPMessage(){}
+
+    public IPMessage(String IPAddress, String IPPort, String IPType, String IPSpeed) {
+        this.IPAddress = IPAddress;
+        this.IPPort = IPPort;
+        this.IPType = IPType;
+        this.IPSpeed = IPSpeed;
+    }
+
     public String getIPAddress() {
         return IPAddress;
     }

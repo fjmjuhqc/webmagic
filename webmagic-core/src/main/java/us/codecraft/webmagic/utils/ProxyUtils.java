@@ -18,7 +18,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.out;
 
 /**
  * Pooled Proxy Object
@@ -90,6 +89,7 @@ public class ProxyUtils {
 		}
 	}
 
+	@Deprecated
 	public static boolean ipIsValidate(Proxy ip){
 		try {
 			//Proxy类代理方法
@@ -129,12 +129,12 @@ public class ProxyUtils {
 		}
 		return newIPMessages;
 	}
-	//
+	//过滤无效ip
 	public  static void IPIsable(List<IPMessage> ipMessageList) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		for (int i = 0; i < ipMessageList.size(); i++) {
 			Proxy proxy = new Proxy(ipMessageList.get(i).getIPAddress(),Integer.parseInt(ipMessageList.get(i).getIPPort()));
-			if (!ipIsValidate(proxy)){
+			if (!validateProxy(proxy)){
 				//不可用代理直接删除
 				ipMessageList.remove(ipMessageList.get(i));
 				i--;

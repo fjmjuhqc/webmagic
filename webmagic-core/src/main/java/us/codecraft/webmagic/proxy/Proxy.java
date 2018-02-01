@@ -5,15 +5,23 @@ package us.codecraft.webmagic.proxy;
  */
 
 public class Proxy {
-
-	private String host;
-	private int port;
+	private static final long serialVersionUID = 1L;
+	private String host;//ip地址
+	private int port;//端口
+	private String type;//类型
 	private String username;
 	private String password;
+	private String redisKey;//redis 的key值,方便删除
 
 	public Proxy(String host, int port) {
 		this.host = host;
 		this.port = port;
+	}
+
+	public Proxy(String host, int port,String type) {
+		this.host = host;
+		this.port = port;
+		this.type = type;
 	}
 
 	public Proxy(String host, int port, String username, String password) {
@@ -31,12 +39,24 @@ public class Proxy {
 		return port;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	public String getUsername() {
 		return username;
 	}
 
 	public String getPassword() {
 		return password;
+	}
+
+	public String getRedisKey() {
+		return redisKey;
+	}
+
+	public void setRedisKey(String redisKey) {
+		this.redisKey = redisKey;
 	}
 
 	@Override
@@ -66,8 +86,6 @@ public class Proxy {
 		return "Proxy{" +
 				"host='" + host + '\'' +
 				", port=" + port +
-				", username='" + username + '\'' +
-				", password='" + password + '\'' +
 				'}';
 	}
 }

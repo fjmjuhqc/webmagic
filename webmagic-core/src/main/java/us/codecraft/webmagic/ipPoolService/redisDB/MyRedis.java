@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.pipeline.redisDB;
+package us.codecraft.webmagic.ipPoolService.redisDB;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class MyRedis {
         ipMessages = ProxyUtils.Filter(ipMessages);
         //TODO:这里有个问题，若是进行质量检测，代码没有进入保存，而是直接跳过
         //对拿到的ip进行质量检测，将质量不合格的ip在List里进行删除
-        //ProxyUtils.IPIsable(ipMessages);
+        ProxyUtils.IPIsable(ipMessages);
         //保存
         for (IPMessage ipMessage : ipMessages) {
             //首先将ipMessage进行序列化

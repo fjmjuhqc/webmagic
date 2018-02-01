@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.pipeline;
+package us.codecraft.webmagic.thread;
 
 import us.codecraft.webmagic.model.IPMessage;
 import us.codecraft.webmagic.proxy.Proxy;

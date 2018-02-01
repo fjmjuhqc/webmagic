@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.pipeline.redisDB;
+package us.codecraft.webmagic.ipPoolService.redisDB;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

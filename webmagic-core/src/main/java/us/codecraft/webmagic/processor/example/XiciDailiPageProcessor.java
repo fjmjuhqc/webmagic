@@ -4,11 +4,10 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
-import us.codecraft.webmagic.model.IPMessage;
 import us.codecraft.webmagic.pipeline.RedisPipeline;
-import us.codecraft.webmagic.pipeline.redisDB.MyRedis;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.proxy.IpProxyProvider;
+import us.codecraft.webmagic.proxy.IPProxyProvider;
+import us.codecraft.webmagic.proxy.Proxy;
 import us.codecraft.webmagic.selector.Selectable;
 
 import java.util.ArrayList;
@@ -26,25 +25,20 @@ public class XiciDailiPageProcessor implements PageProcessor{
     //process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
     public void process(Page page) {
         //部分二：定义如何抽取页面信息，并保存下来
-        List<IPMessage> ipMessages = new ArrayList<IPMessage>();
+        List<Proxy> proxyList = new ArrayList<Proxy>();
 
         List<Selectable> nodes = page.getHtml().xpath("//tbody/tr").nodes();
         for (Selectable node : nodes.subList(1,nodes.size())){
-            String ipAddress = node.xpath("/tr/td[2]/text()").get();
-            String ipPort = node.xpath("/tr/td[3]/text()").get();
-            String ipType = node.xpath("/tr/td[6]/text()").get();
-            String ipSpeed = node.xpath("/tr/td[7]/div/@title").get();
-
-            IPMessage ipMessage = new IPMessage();
-            ipMessage.setIPAddress(ipAddress);
-            ipMessage.setIPPort(ipPort);
-            ipMessage.setIPType(ipType);
-            ipMessage.setIPSpeed(ipSpeed);
-            ipMessages.add(ipMessage);
+            String ip = node.xpath("/tr/td[2]/text()").get();
+            String port = node.xpath("/tr/td[3]/text()").get();
+            String type = node.xpath("/tr/td[6]/text()").get();
+            //String ipSpeed = node.xpath("/tr/td[7]/div/@title").get();
+            Proxy proxy = new Proxy(ip,Integer.parseInt(port),type);
+            proxyList.add(proxy);
         }
         //设置skip之后，这个页面的结果不会被Pipeline处理
         //page.setSkip(true);
-        page.putField("IPPool",ipMessages);
+        page.putField("XCIPPool",proxyList);
 
         //部分三：从页面发现后续的url地址来抓取
         page.addTargetRequests(page.getHtml().xpath("//div[@class='pagination']/a[@class='next_page']/@href")
@@ -57,20 +51,13 @@ public class XiciDailiPageProcessor implements PageProcessor{
     }
 
     public static void main(String[] args) {
-        //首先清空redis数据库中的key
-        MyRedis redis = new MyRedis();
-        redis.deleteKey("IPPool");
-        System.out.println("清空redis .........");
-        //其次开始爬取今天有效的IP代理
         HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
-
-        httpClientDownloader.setProxyProvider(new IpProxyProvider());
+        httpClientDownloader.setProxyProvider(new IPProxyProvider());
         Spider.create(new XiciDailiPageProcessor())
                 .addUrl("http://www.xicidaili.com/nn")
                 .setDownloader(httpClientDownloader)
                 .addPipeline(new RedisPipeline())
                 .thread(5)
                 .run();
-        redis.close();
     }
 }
