@@ -12,7 +12,8 @@ public class IPProxyProvider implements ProxyProvider{
     private static final Logger logger = LoggerFactory.getLogger(IPProxyProvider.class);
     @Override
     public void returnProxy(Proxy proxy, Page page, Task task) {
-        //do nothing
+        //把用完的代理重新存入IP动态池
+        //IPPoolManageService.addProxy(proxy.getRedisKey(),proxy);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class IPProxyProvider implements ProxyProvider{
             proxy = IPPoolManageService.getProxy();
         }
 
-        logger.info("get the ip proxy = "+proxy);
+        logger.info("IPProxyProvider get the ip proxy = "+proxy);
         return proxy;
     }
 }

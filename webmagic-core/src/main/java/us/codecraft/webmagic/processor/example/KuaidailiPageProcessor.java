@@ -3,13 +3,19 @@ package us.codecraft.webmagic.processor.example;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.downloader.HttpClientDownloader;
+import us.codecraft.webmagic.pipeline.RedisPipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.proxy.IPProxyProvider;
 import us.codecraft.webmagic.proxy.Proxy;
 import us.codecraft.webmagic.selector.Selectable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 快代理 https://www.kuaidaili.com/free/
+ */
 public class KuaidailiPageProcessor implements PageProcessor {
     //部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等
     private Site site = Site.me().setRetryTimes(3).setSleepTime(1000).setTimeOut(10000);
@@ -38,7 +44,11 @@ public class KuaidailiPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
+        HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
+        httpClientDownloader.setProxyProvider(new IPProxyProvider());
         Spider.create(new KuaidailiPageProcessor()).addUrl("https://www.kuaidaili.com/free/")
+                .setDownloader(httpClientDownloader)
+                .addPipeline(new RedisPipeline())
                 .thread(5)
                 .run();
     }

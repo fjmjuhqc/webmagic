@@ -28,13 +28,14 @@ public class IPPoolManageService {
         String key = jedis.randomKey();//随机key值
         if (key==null) return null;
         String value = jedis.srandmember(key);//返回key集合的一个随机数
+        //String value = jedis.spop(key);//移除并返回集合中的一个随机元素
         String[] result = value.split(":");
         String ip = result[0];
         int port = Integer.parseInt(result[1]);
         String type = result[2];
         Proxy proxy = new Proxy(ip,port,type);
         proxy.setRedisKey(key);
-        logger.info("get a proxy "+value);
+        logger.info("IPPoolManageService get a proxy "+value);
         RedisDB.close(jedis);
         return proxy;
     }
@@ -49,7 +50,7 @@ public class IPPoolManageService {
         StringBuffer sb = new StringBuffer(proxy.getHost());
         sb.append(":").append(proxy.getPort()).append(":").append(proxy.getType());
         jedis.srem(key,sb.toString());
-        logger.info("delete a proxy from redis "+sb.toString());
+        logger.info("IPPoolManageService delete a proxy from redis "+sb.toString());
         RedisDB.close(jedis);
     }
 
@@ -63,7 +64,7 @@ public class IPPoolManageService {
         StringBuffer sb = new StringBuffer(proxy.getHost());
         sb.append(":").append(proxy.getPort()).append(":").append(proxy.getType());
         jedis.sadd(key,sb.toString());
-        logger.info("add a proxy to redis "+sb.toString());
+        logger.info("IPPoolManageService add a proxy to redis "+sb.toString());
         RedisDB.close(jedis);
     }
     /**
@@ -78,7 +79,7 @@ public class IPPoolManageService {
             sb.append(":").append(proxy.getPort()).append(":").append(proxy.getType());
             jedis.sadd(key,sb.toString());
         }
-        logger.info("add a proxy list to redis ,the size is "+proxies.size());
+        logger.info("IPPoolManageService add a proxy list to redis ,the size is "+proxies.size());
         RedisDB.close(jedis);
     }
 }
