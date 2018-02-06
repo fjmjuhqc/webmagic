@@ -50,6 +50,31 @@ public class ProxyUtils {
 				}
 			}
 		}
+	}
+	//验证代理是否有效
+	public static boolean validateProxy(String proxyInfo) {
+		String[] result = proxyInfo.split(":");
+		String ip = result[0];
+		int port = Integer.parseInt(result[1]);
+
+		Socket socket = null;
+		try {
+			socket = new Socket();
+			InetSocketAddress endpointSocketAddr = new InetSocketAddress(ip, port);
+			socket.connect(endpointSocketAddr, 3000);
+			return true;
+		} catch (IOException e) {
+			logger.warn("FAILRE - CAN not connect!  remote: {" + ip+":"+port+"}");
+			return false;
+		} finally {
+			if (socket != null) {
+				try {
+					socket.close();
+				} catch (IOException e) {
+					logger.warn("Error occurred while closing socket of validating proxy", e);
+				}
+			}
+		}
 
 	}
 	/**
