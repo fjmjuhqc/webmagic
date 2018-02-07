@@ -112,8 +112,8 @@ public class IPPoolManageService {
             List<String> result = new ArrayList<String>(value);
             //对创建的子线程进行验证
             List<Thread> threads = new ArrayList<Thread>();
-            //五个线程进行验证
-            int threadNum = 5;
+            //十个线程进行验证
+            int threadNum = 10;
             int num = result.size()/threadNum;
             if (result.size()%2!=0||num==0){
                 num++;
@@ -131,19 +131,6 @@ public class IPPoolManageService {
                     e.printStackTrace();
                 }
             }
-//            //单线程验证
-//            for (String v : value){
-//                //验证代理的有效性
-//                if (ProxyUtils.validateProxy(stringToProxy(v))){
-//                    jedis.select(1);//db1
-//                    jedis.sadd(key,v);
-//                    //复制完后删除
-//                    jedis.select(0);
-//                    jedis.srem(key,v);
-//                }else {
-//                    jedis.srem(key,v);//无效的value 删除
-//                }
-//            }
         }
         RedisDB.close(jedis);
     }

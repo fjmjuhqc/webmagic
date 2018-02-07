@@ -20,7 +20,7 @@ public class MyTimer {
                 .addPipeline(new RedisPipeline())
                 .thread(5)
                 .run();
-        //TODO:如何保证job在爬西刺代理前执行
+        //TODO:如何保证job在爬西刺代理前执行，另外已验证有效的代理在爬取时也可能失效
         MyTimeJob job = new MyTimeJob();
         Timer timer = new Timer();
         Calendar calendar = Calendar.getInstance();
